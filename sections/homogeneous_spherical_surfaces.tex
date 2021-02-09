@@ -1,5 +1,33 @@
-\section{Homogene Kugeloberflächen}
-\subsection{Das Problem mit naiven Methoden}
+\section{Berechnung einer Kugel}
+Damit später eine Textur für die Sonne erstellt werden kann, muss zuerst eine
+Oberfläche generiert werden, die diese Textur aufnehmen kann. Hierfür existieren
+verschiedenste Möglichkeiten. Im Falle der Sonne betrachten wir das Modell einer
+Kugel, die später manipuliert werden soll, um visuelle Effekte auf ihr
+abzubilden. Beim Betrachten der folgenden Algorithmen zur Erzeugung von
+Kugeloberflächen wird klar, dass nicht alle Methoden für dieses Vorhaben
+geeignet sind. Aus diesem Grund werden die einzelnen Verfahren näher erläutert
+und anschließend abgewogen, welcher Algorithmus zur Erzeugung einer
+Sonnenoberfläche verwendet werden sollte.
+
+\subsection{Die naive Methode}
+Die einfachste Möglichkeit, eine Kugeloberfläche zu erzeugen, ist die Verwendung
+von Segmentlinien. Im Grunde unterteilt man die gesamte Kugel in Schichten,
+deren Umfang schließlich die Oberfläche der Kugel darstellen. Die Mesh-Punkte
+(\textit{Vertices}) dieser Schichten, welche als einfache Kreise wahrgenommen
+werden können, werden mithilfe von Längen- und Breitengradinformationen
+erstellt. Das Resultat ist eine Kugeloberfläche mit erkennbaren Polen an der
+Ober- und Unterseite der Oberfläche. Diese entstehen dadurch, dass auch am Rand
+der Kugel die gleiche Anzahl an Kanten vorhanden ist, wie am Äquator. Diese
+Schichten sind dementsprechend lediglich herunterskaliert und in einem immer
+kürzer werdenden Abstand aufeinander geschichtet und Erzeugen eine Überabtastung
+am oberen und unteren Rand der Kugel.
+
+Die Überabtastung an den Polen bzw. die Unterabtastung am Äquator bringt viele
+Probleme mit sich. Vor allem, wenn die Oberfläche animiert werden soll,
+erscheint die Animation als sehr unregelmäßig. Hierauf wird jedoch in einem
+späteren Abschnitt eingegangen, wenn die hier vorgestellten Methoden miteinander
+verglichen werden.
+
 \subsection{Fibonacci-Spiralen}
 \subsection{Ikosaeder}
 \subsection{Entwicklung eines Skripts}
