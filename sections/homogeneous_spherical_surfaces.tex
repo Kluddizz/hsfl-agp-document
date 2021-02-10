@@ -64,4 +64,36 @@ werden. Um Flächen darstellen zu können, muss nachträglich eine Triangulation
 stattfinden. 
 
 \subsection{Ikosaeder}
+Genau wie das Fibonacci-Gitter erzeugt ein Ikosaeder gleichmäßig verteilte
+Punkte auf der Oberfläche einer Kugel. Das Verfahren ist trotzdem komplett
+unterschiedlich. Anstatt die Vertices des Meshes zu berechnen und
+anschließend diese miteinander in Dreiecke zu verbinden, wird eine initiale
+Geometry erzeugt, dessen Flächen wiederum in weitere Flächen unterteilt wird.
+Dieses Vorgehen wird beliebige Male wiederholt, um eine immer glattere
+Oberfläche zu erzeugen. Das Problem bei diesem Algorithmus ist, dass durch
+die Unterteilung der Flächen in weitere, kleinere Flächen auf den ersten
+Blick nicht abgeschätzt werden kann, wie viele Vertices genau berechnet
+werden müssen. Tabelle \ref{table:icosahedron-complexity} zeigt den Anstieg
+der benötigten Punkte, die durch $N$ wiederholten Unterteilungsschritten
+berechnet werden müssen. Anhand der Anzahl an Dreiecken fällt ein
+exponentielles Wachstum auf, weshalb eine Erhöhung der
+Unterteilungsiterationen mit Bedacht durchgeführt werden sollte. Eine kleine
+Veränderung von $N$ hat große Auswirkung auf die benötigte Rechenleistung für
+das Kugelmesh.
+
+\begin{table}
+  \caption{Vergleich zwischen Anzahl der Unterteilungsiterationen $N$ und den erzeugten neuen Flächen bzw. Vertices}
+  \label{table:icosahedron-complexity}
+  \begin{tabularx}{\columnwidth}{lXX}
+    \textbf{N} & \textbf{Anzahl Vertices} & \textbf{Anzahl Dreiecke} \\
+    \hline
+    1 & 12   & 60 \\
+    2 & 42   & 240 \\
+    3 & 162  & 960 \\
+    4 & 642  & 3840 \\
+    5 & 2562 & 15360
+  \end{tabularx}
+\end{table}
+
+
 \subsection{Entwicklung eines Skripts}
