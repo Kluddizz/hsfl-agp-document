@@ -9,6 +9,12 @@ geeignet sind. Aus diesem Grund werden die einzelnen Verfahren näher erläutert
 und anschließend abgewogen, welcher Algorithmus zur Erzeugung einer
 Sonnenoberfläche verwendet werden sollte.
 
+\begin{figure}
+  \includegraphics[width=\columnwidth]{spheres}
+  \caption{Vergleich der verschiedenen Resultate der Algorithmen zum Erzeugen von Punkten auf einer Kugel. Links: Fibonacci-Gitter, Mitte: Icosphere, Rechts: Längen-Breitengrad-Gitter.}
+  \Description[Darstellung Algorithmen]{Darstellung der Algorithmen zum Erzeugen von Punkten auf Kugeln}
+\end{figure}
+
 \subsection{Längengrad-Breitengrad-Gitter}
 Die einfachste Möglichkeit, eine Kugeloberfläche zu erzeugen, ist die Verwendung
 von Segmentlinien. Im Grunde unterteilt man die gesamte Kugel in Schichten,
@@ -63,7 +69,8 @@ dieser Lösung ist, dass lediglich die Punkte bzw. Vertices eines Meshes erzeugt
 werden. Um Flächen darstellen zu können, muss nachträglich eine Triangulation
 stattfinden. 
 
-\subsection{Ikosaeder}
+\FloatBarrier
+\subsection{Icosphere}
 Genau wie das Fibonacci-Gitter erzeugt ein Ikosaeder gleichmäßig verteilte
 Punkte auf der Oberfläche einer Kugel. Das Verfahren ist trotzdem komplett
 unterschiedlich. Anstatt die Vertices des Meshes zu berechnen und
@@ -75,14 +82,14 @@ die Unterteilung der Flächen in weitere, kleinere Flächen auf den ersten
 Blick nicht abgeschätzt werden kann, wie viele Vertices genau berechnet
 werden müssen. Tabelle \ref{table:icosahedron-complexity} zeigt den Anstieg
 der benötigten Punkte, die durch $N$ wiederholten Unterteilungsschritten
-berechnet werden müssen. Anhand der Anzahl an Dreiecken fällt ein
+berechnet werden müssen \cite{Marc2019}. Anhand der Anzahl an Dreiecken fällt ein
 exponentielles Wachstum auf, weshalb eine Erhöhung der
 Unterteilungsiterationen mit Bedacht durchgeführt werden sollte. Eine kleine
 Veränderung von $N$ hat große Auswirkung auf die benötigte Rechenleistung für
-das Kugelmesh.
+das Kugelmesh \cite{BlenderPrimitives}.
 
 \begin{table}
-  \caption{Vergleich zwischen Anzahl der Unterteilungsiterationen $N$ und den erzeugten neuen Flächen bzw. Vertices}
+  \caption{Vergleich zwischen Anzahl der Unterteilungsiterationen $N$ und den erzeugten neuen Flächen bzw. Vertices.}
   \label{table:icosahedron-complexity}
   \begin{tabularx}{\columnwidth}{lXX}
     \textbf{N} & \textbf{Anzahl Vertices} & \textbf{Anzahl Dreiecke} \\
@@ -94,6 +101,40 @@ das Kugelmesh.
     5 & 2562 & 15360
   \end{tabularx}
 \end{table}
+\FloatBarrier
 
+\subsection{Wahl eines Algorithmus' für die Sonne}
+Da in den voherigen Abschnitten einige Algorithmen zum Erzeugen von Punkten
+auf einer Kugeloberfläche besprochen wurden, muss nun ein geeigneter
+Algorithmus ausgewählt werden, welcher zur Beschaffenheit der Sonne passt.
+Außerdem muss berücksichtigt werden, dass die Oberfläche in späteren
+Schritten manipuliert und animiert werden soll. Dabei ist es wichtig zu
+berücksichtigen, dass sich die Oberfläche der Sonne überall gleichmäßig
+verhalten soll. Aus diesem Grund kann das Längengrad-Breitengrad-Gitter nicht
+verwendet werden. Das Problem mit diesem Gitter ist, dass es eine
+Überabtastung an den Polen bzw. eine Unterabtastung am Äquator besitzt. Eine
+Oberflächenbewegung wäre daher sehr unregelmäßig und entspricht auch nicht dem
+originalen Vorbild.
 
-\subsection{Entwicklung eines Skripts}
+Eine elegantere Lösung wäre die Verwendung des Fibonacci-Gitters. Die Anzahl
+der Punkte sind frei wählbar und werden homogen auf der Oberfläche verteilt.
+Auch ist die Berechnung der Positionen nicht komplex. Jedoch stößt man auf
+Probleme beim erstellen der Flächen basierend auf den Punkten wie in
+Abbildung \ref{fig:fibo-lattice-hole} zu sehen. Das Problem liegt beim
+Verbinden der letzten Vertices im Mesh, welche nach einer
+Delaunay-Triangulation ein Loch hervorrufen. Die Herausforderung ist, dieses
+Loch genau so homogen zu schließen, wie den Rest der Oberfläche
+\cite{RedBlobGames}.
+
+\begin{figure}
+  \includegraphics[width=\columnwidth]{fibonacci-sphere-hole}
+  \caption{Loch nach dem Ausführen einer Delaunay-Triangulation auf einem Fibonacci-Gitter.}
+  \Description[Fibonacci-Gitter-Loch]{Das Loch nach dem Ausführen einer Delaunay-Triangulation auf ein Fibonacci-Gitter}
+  \label{fig:fibo-lattice-hole}
+\end{figure}
+
+Die wohl am besten geeignete Lösung für das Erzeugen einer Sonnenoberfläche
+ist daher die \textit{Icosphere}. Auch, wenn die Anzahl der Punkte bzw. Dreiecke
+des Meshes nach jeder neuen Unterteilungsiteration drastisch ansteigen, kann bereits
+nach wenigen Iterationen eine erkennbare Kugel mit gleichverteilten Kanten erzeugt
+werden. Auch ist die Geometrie geschlossen.

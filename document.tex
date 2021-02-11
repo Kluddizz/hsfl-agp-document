@@ -9,16 +9,17 @@
 
 \usepackage[ngerman]{babel}
 \usepackage{tabularx}
+\usepackage{placeins}
 
 \settopmatter{printacmref=false}
 \renewcommand\footnotetextcopyrightpermission[1]{}
-\pagestyle{plain}
 
 \begin{document}
   \begin{abstract}
     test
   \end{abstract}
   \maketitle
+  \pagestyle{plain}
 
   \input{sections/introduction.tex}
   \input{sections/basics.tex}
