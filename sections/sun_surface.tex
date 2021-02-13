@@ -1,5 +1,67 @@
 \section{Sonnenoberfläche}
-\subsection{Generierung des Meshes} 
+In diesem Abschnitt wird besprochen, wie die Sonnenoberfläche in der Realität
+aussieht und wie die Erscheinung prodedural Nachgebildet werden kann. Dabei
+wird insbesondere auf die Entwicklung eines entsprechenden CG-Shaders
+eingengangen. Grundsätzlich besteht die Möglichkeit, eine Textur zu
+generieren, diese in eine Datei zu speichern und anschließend auf das Mesh zu
+übertragen. Dies hat jedoch den Nachteil, dass die Textur nur unter sehr
+hohem Aufwand über die Zeit verändert werden kann. Deshalb soll die
+Oberflächentextur im Shader selbst erzeugt werden, sodass diese in Echtzeit
+animiert werden kann. Auch wird das Verfahren erläutert, wie die
+Sonnengeometrie erzeugt wird und für den Shader vorbereitet wird.
+
+\subsection{Generierung der Geometrie} 
+Bevor eine Textur für die Sonne dargestellt werden kann, müssen zuerst alle
+Rahmenbedingungen stimmen. Dies beinhaltet vor allem die Vorbereitung eines
+geeigneten Meshes für die Sonnenoberfläche. Im Folgenden wird der Algorithmus
+vorgestellt, welcher eine homogene Geometrie für die Sonne erstellt. Dieser
+erstellt in erster Linie die Eckpunkte einer Icosphere. Eine Icosphere
+besitzt 20 Dreiecke bestehend aus 12 Eckpunkten, welche die Grundlage für
+weitere Unterteilungsschritte sind. Dementspreched müssen diese initial
+berechnet werden. Anschließend startet der eigentliche Algorithmus zum
+Unterteilen der Flächen in kleinere Flächen. Dieser berechnet auf jeder Kante
+eines Dreiecks einen Mittelpunkt, sodass insgesamt drei neue Eckpunkte entstehen.
+Anschließend müssen die neu erzeugten Punkte auf die Einheitskugel abgebildet werden,
+indem die Positionsvektoren normalisiert werden. Algorithmus \ref{alg:icosphere}
+soll diesen Vorgang verdeutlichen.
+
+\begin{algorithm}
+  \caption{Unterteilen von Dreiecksflächen auf einer Icosphere}
+  \label{alg:icosphere}
+  \SetAlgoLined
+
+  \SetKwInOut{Input}{Eingabe}\SetKwInOut{Output}{Ausgabe}
+
+  \Input{Flächen des Basismeshes $M$, Rekursionslevel $n$}
+  \Output{Mesh einer Icosphere mit unterteilten Flächen}
+  \BlankLine
+  \For{$i\leftarrow 0$ \KwTo $n$}{
+    $M'\leftarrow \{\}$\;
+    \BlankLine
+    \ForEach{$d \in M$}{
+      $(\vec{a},\;\vec{b},\;\vec{c})\leftarrow d$\;
+      \BlankLine
+      $\vec{a}'\leftarrow$ calculateMiddlePoint($\vec{a}$, $\vec{b}$)\;
+      $\vec{b}'\leftarrow$ calculateMiddlePoint($\vec{b}$, $\vec{c}$)\;
+      $\vec{c}'\leftarrow$ calculateMiddlePoint($\vec{c}$, $\vec{a}$)\;
+      \BlankLine
+      append($M'$, $(\vec{a},\;\vec{a}',\;\vec{c}')$)\;
+      append($M'$, $(\vec{b},\;\vec{b}',\;\vec{a}')$)\;
+      append($M'$, $(\vec{c},\;\vec{c}',\;\vec{b}')$)\;
+      append($M'$, $(\vec{a}',\;\vec{b}',\;\vec{c}')$)\;
+    }
+    \BlankLine
+    $M\leftarrow M'$\;
+  }
+\end{algorithm}
+
+\begin{figure}
+  \caption{Vergleich zwischen unterschiedlichen Rekursionslevel von Algorithmus \ref{alg:icosphere}. Links befindet sich das Basismodell, in der Mitte die erste und rechts die zweite Rekursionsstufe.}
+  \label{fig:icosphere-levels}
+  \includegraphics[width=\columnwidth]{icosphere-algorithm}
+  \Description[]{}
+\end{figure}
+
 \subsection{Fractal Brownian Motion}
 \subsection{Cellular Noise}
 \subsection{Entwicklung eines Shaders}
