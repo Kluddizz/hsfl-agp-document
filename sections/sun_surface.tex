@@ -85,7 +85,7 @@ Stellen niedrigere Temperaturen aufweisen.
 Anstatt nun zu versuchen, die Oberfläche der Sonne so realitätsgetreu wie
 möglich nachzubilden, wird in diesem Projekt versucht, mithilfe von künstlich
 erzeugtem Rauschen eine ähnliche Oberfläche zu generieren. Hierfür wird, wie
-der Titel des Abschnitts andeutet, \textit{Fractal Brownian Motion} verwendet.
+der Titel des Abschnitts andeutet, \textit{Fractal Brownian Motion} (FBM) verwendet.
 Oft werden hierbei Begriffe wie \textit{Oktaven}, \textit{Porosität} und
 \textit{Zuwachs} genannt. Eine Oktave beschreibt eine Summe aus mehreren
 Rauschfunktionen, die Porosität die Multiplikation der Frequenz um einen konstanten
@@ -93,22 +93,66 @@ Wert und der Zuwachs die Verringerung der Amplitude. Algorithmus \ref{alg:fbm} z
 ein einfaches zweidimensionales frakturiertes Rauschen basierend auf \cite{bookofshaders}.
 
 \begin{algorithm}
-  \caption{Fractal Brownian Motion im zweidimensionalen Raum}
+  \caption{Fractal Brownian Motion mit eindimensionaler Eingabe}
   \label{alg:fbm}
   \SetAlgoLined
 
-  $octaves\leftarrow 1$\;
-  $lacunarity\leftarrow 2$\;
-  $gain\leftarrow 0.5$\;
+  \SetKwInOut{Input}{Eingabe}\SetKwInOut{Output}{Ausgabe}
+
+  \Input{x \in \mathbb{R}, \mathit{octaves} \in \mathbb{N}}
+  \Output{y \in \mathbb{R}}
   \BlankLine
-  $amplitude\leftarrow 0.5$\;
-  $frequency\leftarrow 1$\;
+  $y \leftarrow 0$\;
+  $\mathit{lacunarity}\leftarrow 2$\;
+  $\mathit{gain}\leftarrow 0.5$\;
   \BlankLine
-  \For{$i\leftarrow 0$ \KwTo $octaves$}{
-    $y = y + \text{amplitude} * \text{noise}(\text{frequency} \cdot x)$\;
-    $\text{frequency} = \text{frequency} \cdot \text{lacunarity}$\;
-    $\text{amplitude} = \text{amplitude} \cdot \text{gain}$\;
+  $\mathit{amplitude}\leftarrow 0.5$\;
+  $\mathit{frequency}\leftarrow 1$\;
+  \BlankLine
+  \For{$i\leftarrow 0$ \KwTo $\mathit{octaves}$}{
+    $y = y + \mathit{amplitude} * \mathit{noise}(\mathit{frequency} \cdot x)$\;
+    $\mathit{frequency} = \mathit{frequency} \cdot \mathit{lacunarity}$\;
+    $\mathit{amplitude} = \mathit{amplitude} \cdot \mathit{gain}$\;
   }
+  \BlankLine
+  \Return y\;
+
 \end{algorithm}
+
+Die Abbildung zum Erzeugen von Rauschen (\textit{noise}) kann dabei beliebig
+gewählt werden. In den meisten Fällen erzeugt man jedoch kein echtes Rauschen,
+welches eine nicht stetische Funktion darstellen würde. Stattdessen wird
+mithilfe von überlagerten Wellenfunktionen künstliches stetiges Rauschen
+implementiert. Dies hat den Vorteil, dass sich das Rauschverhalten periodisch
+ist, d.h. dass sich die Werte abhängig von der Zeit irgendwann wiederholen. Dies
+ist unter anderem daher sinnvoll, da im Falle einer Textur sonst Sprünge bzw.
+harte Kanten erzeugt werden. Um FBM nun in der Textur verwenden zu können muss
+die Funktion \textit{noise} näher betrachtet werden. Im Algorithmus
+\ref{alg:fbm} wird die Abbildung $\text{noise}: \mathbb{R} \to \mathbb{R}$
+verwendet. Als Eingabe wird also eine reelle Zahl genommen und auf eine andere
+reelle Zahl abgebildet. Um nun eine Textur zu erzeugen muss beachtet werden,
+dass das Mesh, dessen Oberfläche mit der Textur ausgestattet werden soll,
+sogenannte UV-Koordinaten pro Eckpunkt definiert. Anhand dieser UV-Koordinaten
+wird dann die entsprechende Stelle in der Textur verwendet und auf den Eckpunkt
+projeziert. Da eine Textur häufig zweidimensional ist, sind die UV-Koordinaten
+ebenfalls zweidimensionale Angaben. Die Abbildung muss nun also umgewandelt
+werden, sodass $\text{noise}: \mathbb{R}^2 \to \mathbb{R}$ gilt. Damit wird bei
+einer Eingabe eines zweidimensionalen Vektors eine reelle Zahl abgebiltet, die
+im darauf folgenden Schritt als Farbwert verwendet werden kann. Mit anderen
+Worten, der Algorithmus liefert dann zu jeder UV-Koordinate einen entsprechenden
+Graustufenwert der Textur.
+
+\begin{algorithm}
+  \caption{Erzeugen der Sonnentextur unter der Verwendum von Fractal Brownian
+  Motion}
+  \label{alg:suntexture}
+
+  $y_\mathit{fbm} \leftarrow \operatorname{fbm}(\mathit{uv} +
+    \operatorname{fbm}(5 \cdot \mathit{uv} + \mathit{time}, \mathit{octaves}),
+    \mathit{octaves})$\;
+  $\mathit{color} \leftarrow (y_\mathit{fbm}, y_\mathit{fbm}, y_\mathit{fbm})$\;
+  \Return $\mathit{color}$\;
+\end{algorithm}
+
 
 \subsection{Entwicklung eines Shaders}
