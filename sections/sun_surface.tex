@@ -20,10 +20,11 @@ besitzt 20 Dreiecke bestehend aus 12 Eckpunkten, welche die Grundlage für
 weitere Unterteilungsschritte sind. Dementspreched müssen diese initial
 berechnet werden. Anschließend startet der eigentliche Algorithmus zum
 Unterteilen der Flächen in kleinere Flächen. Dieser berechnet auf jeder Kante
-eines Dreiecks einen Mittelpunkt, sodass insgesamt drei neue Eckpunkte entstehen.
-Anschließend müssen die neu erzeugten Punkte auf die Einheitskugel abgebildet werden,
-indem die Positionsvektoren normalisiert werden. Algorithmus \ref{alg:icosphere}
-soll diesen Vorgang verdeutlichen.
+eines Dreiecks einen Mittelpunkt, sodass für jede Dreiecksfläche insgesamt
+drei neue Eckpunkte entstehen. Anschließend müssen die neu erzeugten Punkte
+auf die Einheitskugel abgebildet werden, indem die Positionsvektoren
+normalisiert werden. Algorithmus \ref{alg:icosphere} soll diesen Vorgang
+verdeutlichen.
 
 \begin{algorithm}
   \caption{Unterteilen von Dreiecksflächen auf einer Icosphere}
@@ -63,5 +64,51 @@ soll diesen Vorgang verdeutlichen.
 \end{figure}
 
 \subsection{Fractal Brownian Motion}
-\subsection{Cellular Noise}
+Eine Textur zu erzeugen, die zu jeden Zeitpunkt gleich aussieht wirkt oft
+langweilig und uninteressant. Auch, wenn man das Vorbild dieser Arbeit
+betrachtet -- die Sonne --, unterscheidet sich die Oberfläche zu jedem
+Zeitpunkt von einer vorherigen Messung. Um ein solchen Phänomen zu
+modellieren, bedient man sich häufig dem Rauschen. Rauschen hat für
+unterschiedliche Fachgebiete eine unterschiedliche Bedeutung. Musiker
+verbinden damit störende Geräusche und Astrophysiker denken dabei an
+kosmische Hintergrundstrahlung \cite{bookofshaders}. In der Computergrafik
+versucht man hingegen, dieses Rauschen künstlich zu generieren, um
+beispielsweise eine Textur prozedural zu erzeugen. Auch in dieser Arbeit soll
+die Oberflächentextur der Sonne durch ein künstliches Rauschen erzeugt und
+verändert werden. Dies entspricht natürlich nicht der Realität, denn die
+Sonnenoberfläche hängt von vielen Faktoren, wie der Temperatur und dem
+Magnetfeld der Sonne ab. Auch kann man sogenannte Sonnenflecken beobachten,
+welche sich als dunkle Flecken auf der Oberfläche äußern. Diese sind nicht
+wirklich schwarz, sondern erscheinen dunkler als ihre Umgebung, da diese
+Stellen niedrigere Temperaturen aufweisen.
+
+Anstatt nun zu versuchen, die Oberfläche der Sonne so realitätsgetreu wie
+möglich nachzubilden, wird in diesem Projekt versucht, mithilfe von künstlich
+erzeugtem Rauschen eine ähnliche Oberfläche zu generieren. Hierfür wird, wie
+der Titel des Abschnitts andeutet, \textit{Fractal Brownian Motion} verwendet.
+Oft werden hierbei Begriffe wie \textit{Oktaven}, \textit{Porosität} und
+\textit{Zuwachs} genannt. Eine Oktave beschreibt eine Summe aus mehreren
+Rauschfunktionen, die Porosität die Multiplikation der Frequenz um einen konstanten
+Wert und der Zuwachs die Verringerung der Amplitude. Algorithmus \ref{alg:fbm} zeigt
+ein einfaches zweidimensionales frakturiertes Rauschen basierend auf \cite{bookofshaders}.
+
+\begin{algorithm}
+  \caption{Fractal Brownian Motion im zweidimensionalen Raum}
+  \label{alg:fbm}
+  \SetAlgoLined
+
+  $octaves\leftarrow 1$\;
+  $lacunarity\leftarrow 2$\;
+  $gain\leftarrow 0.5$\;
+  \BlankLine
+  $amplitude\leftarrow 0.5$\;
+  $frequency\leftarrow 1$\;
+  \BlankLine
+  \For{$i\leftarrow 0$ \KwTo $octaves$}{
+    $y = y + \text{amplitude} * \text{noise}(\text{frequency} \cdot x)$\;
+    $\text{frequency} = \text{frequency} \cdot \text{lacunarity}$\;
+    $\text{amplitude} = \text{amplitude} \cdot \text{gain}$\;
+  }
+\end{algorithm}
+
 \subsection{Entwicklung eines Shaders}
