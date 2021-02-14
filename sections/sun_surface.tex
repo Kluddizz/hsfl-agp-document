@@ -85,7 +85,7 @@ Stellen niedrigere Temperaturen aufweisen.
 Anstatt nun zu versuchen, die Oberfläche der Sonne so realitätsgetreu wie
 möglich nachzubilden, wird in diesem Projekt versucht, mithilfe von künstlich
 erzeugtem Rauschen eine ähnliche Oberfläche zu generieren. Hierfür wird, wie
-der Titel des Abschnitts andeutet, \textit{Fractal Brownian Motion} (FBM) verwendet.
+der Titel des Abschnitts andeutet, \textit{Fractal Brownian Motion} (fBM) verwendet.
 Oft werden hierbei Begriffe wie \textit{Oktaven}, \textit{Porosität} und
 \textit{Zuwachs} genannt. Eine Oktave beschreibt eine Summe aus mehreren
 Rauschfunktionen, die Porosität die Multiplikation der Frequenz um einen konstanten
@@ -99,8 +99,8 @@ ein einfaches zweidimensionales frakturiertes Rauschen basierend auf \cite{booko
 
   \SetKwInOut{Input}{Eingabe}\SetKwInOut{Output}{Ausgabe}
 
-  \Input{x \in \mathbb{R}, \mathit{octaves} \in \mathbb{N}}
-  \Output{y \in \mathbb{R}}
+  \Input{$x \in \mathbb{R}$, $\mathit{octaves} \in \mathbb{N}$}
+  \Output{$y \in \mathbb{R}$}
   \BlankLine
   $y \leftarrow 0$\;
   $\mathit{lacunarity}\leftarrow 2$\;
@@ -126,7 +126,7 @@ mithilfe von überlagerten Wellenfunktionen künstliches stetiges Rauschen
 implementiert. Dies hat den Vorteil, dass sich das Rauschverhalten periodisch
 ist, d.h. dass sich die Werte abhängig von der Zeit irgendwann wiederholen. Dies
 ist unter anderem daher sinnvoll, da im Falle einer Textur sonst Sprünge bzw.
-harte Kanten erzeugt werden. Um FBM nun in der Textur verwenden zu können muss
+harte Kanten erzeugt werden. Um fBM nun in der Textur verwenden zu können muss
 die Funktion \textit{noise} näher betrachtet werden. Im Algorithmus
 \ref{alg:fbm} wird die Abbildung $\text{noise}: \mathbb{R} \to \mathbb{R}$
 verwendet. Als Eingabe wird also eine reelle Zahl genommen und auf eine andere
@@ -143,16 +143,23 @@ Worten, der Algorithmus liefert dann zu jeder UV-Koordinate einen entsprechenden
 Graustufenwert der Textur.
 
 \begin{algorithm}
-  \caption{Erzeugen der Sonnentextur unter der Verwendum von Fractal Brownian
+  \caption{Erzeugen der Sonnentextur unter der Verwendung von Fractal Brownian
   Motion}
   \label{alg:suntexture}
+  \SetKwInOut{Input}{Eingabe}\SetKwInOut{Output}{Ausgabe}
+  \SetAlgoLined
 
+  \Input{UV-Koordinate $\mathit{uv}$, Anzahl der Oktaven $n$}
+  \Output{Farbvektor $\vec{c}$}
+  \BlankLine
   $y_\mathit{fbm} \leftarrow \operatorname{fbm}(\mathit{uv} +
-    \operatorname{fbm}(5 \cdot \mathit{uv} + \mathit{time}, \mathit{octaves}),
-    \mathit{octaves})$\;
-  $\mathit{color} \leftarrow (y_\mathit{fbm}, y_\mathit{fbm}, y_\mathit{fbm})$\;
-  \Return $\mathit{color}$\;
+    \operatorname{fbm}(\mathit{uv}, n), n)$\;
+  $\vec{c} \leftarrow (y_\mathit{fbm}, y_\mathit{fbm}, y_\mathit{fbm})$\;
+  \Return $\vec{c}$\;
 \end{algorithm}
 
-
-\subsection{Entwicklung eines Shaders}
+\begin{figure}
+  \includegraphics[width=0.6\columnwidth]{fbm-sphere}
+  \caption{Anwendung von fBM auf einer Icosphere mit einer Amplitude von 0.86, einer Porosität von 4.56 und einem Zuwachs von 0.55.}
+  \Description[fBM auf Icosphere]{Anwendung von fBM auf einer Icosphere mit einer Amplitude von 0.86, einer Porosität von 4.56 und einem Zuwachs von 0.55.}
+\end{figure}
