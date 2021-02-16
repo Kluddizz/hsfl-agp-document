@@ -70,18 +70,10 @@ und anschließend als 3-dimensionale Textur gespeichert. Diese Textur wird
 dann in das Partikelsystem eingebaut und beeinflusst damit die Bewegung und
 Geschwindigkeit der Partikel.
 
-\begin{figure}
-  \includegraphics[width=\columnwidth]{dipole-vector-field}
-  \caption{Magnetfeldlinien eines Dipols \cite{black1913practical}.}
-  \label{fig:dipole-vector-field}
-  \Description[Dipole]{Magnetfeldlinien eines Dipols.}
-\end{figure}
-
 Ein Vektorfeld ist eine Sammlung von Vektoren, die jeweils eine Position
 und eine Richtung besitzen. Damit erfährt jedes Objekt, welches sich an einer
 bestimmten Stelle innerhalb des Vektorfeld befindet, eine Kraft in der
-jeweiligen Richtung. Abbildung \ref{fig:dipole-vector-field} zeigt ein
-Vektorfeld eines Dipols und seines Magnetfeldes. Um ein solches Feld zu erzeugen,
+jeweiligen Richtung. Um ein solches Feld zu erzeugen,
 werden Vektoren gleichmäßig im Raum verteilt. Anschließend werden die Richtungen
 mithilfe der magnetischen Flussdichten für jeden dieser Vektoren bestimmt, sodass
 sich diese anhand des Magnetfelds ausrichten. Jetzt, wo Vektoren im Raum
@@ -89,11 +81,28 @@ verteilt und ihre Richtungen definiert wurden, wird eine 3D-Textur erzeugt, die
 all diese Informationen speichert. Dabei wird die Position eines Vektors durch
 den Index des Pixels und die Richtung durch eine Farbe innerhalb der Textur
 repräsentiert. Abbildung \ref{fig:dipole-vector-field-unity} stellt dies in einem
-zweidimensionalen Raum dar.
+zweidimensionalen Raum dar. Die damit erstellte 3D-Textur bestehend aus
+Richtungsvektoren, die von einer Position abhängen, kann nun innerhalb eines
+Partikelsystems verwendet werden. Damit die Partikel die Form einer Protuberanz
+annehmen, müssen deren Eigenschaften entsprechend justiert werden. Beispielsweise
+muss die initiale Position der Partikel innerhalb der Sonne sein. Dann muss eine
+explosionsähnliche Kraft auf sie einwirken, die die Partikel nach außen treibt.
+Diese Kraft simuliert damit die Rekonnexion von Magnetfeldlinien und steht senkrecht
+auf der Sonnenoberfläche und zeigt nach außen. Da das Magnetfeld ebenfalls vorhanden
+ist, werden sich die Partikel entlang der Magnetfeldlinien bewegen. Das Ergebnis
+sind Protuberanzen, die mithilfe eines Dipols simuliert und in Abbildung \ref{fig:flare}
+betrachtet werden können.
 
 \begin{figure}
   \includegraphics[width=0.75\columnwidth]{dipole-vector-field-unity}
   \caption{In Unity berechnete Magnetfeldlinien des Dipol-Modells. Der Einfachheit halber wird hier ein 2D-Vektorenfeld dargestellt.}
   \label{fig:dipole-vector-field-unity}
   \Description[Dipole]{Magnetfeldlinien eines Dipols.}
+\end{figure}
+
+\begin{figure}
+  \includegraphics[width=\columnwidth]{flare}
+  \caption{Kraftauswirkung eines Dipol-Magnetfeldes auf Partikel der Sonne. Das Ergebnis sind vereinfachte Protuberanzen.}
+  \label{fig:flare}
+  \Description[Protuberanzen]{Kraftauswirkung eines Dipol-Magnetfeldes auf Partikel der Sonne. Das Ergebnis sind vereinfachte Protuberanzen.}
 \end{figure}
